@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Notatki</title>
+</head>
+<body>
+<nav>
+    <form th:action="@{/}">
+        <button type="submit">Strona główna</button>
+    </form>
+    <div sec:authorize="isAnonymous()">
+        <form th:action="@{/login}">
+            <button type="submit">Logowanie</button>
+        </form>
+        <form th:action="@{/register}">
+            <button type="submit">Rejestracja</button>
+        </form>
+    </div>
+    <div sec:authorize="isAuthenticated()">
+        <form th:action="@{/notes}">
+            <button type="submit">Notatki</button>
+        </form>
+        <form th:action="@{/manage}">
+            <button type="submit">Konto</button>
+        </form>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit">Wyloguj się</button>
+        </form>
+    </div>
+</nav>
+<br>
+<h1>Notatki dostępne publicznie:</h1>
+<ul>
+    <li th:each="note : ${notes}">
+        <span th:text="${note.id}"></span> - <span th:text="${note.name}"></span>
+        <a th:href="@{'/notes/details/' + ${note.id}}">Szczegóły</a>
+    </li>
+</ul>
+</body>
+</html>

@@ -1,0 +1,8 @@
+server:
+    port: 8443
+    ssl:
+        key-store: keystore.jks
+        key-store-password: password
+        key-store-type: jks
+        key-alias: notes
+        key-password: password

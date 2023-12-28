@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Wylogowano</title>
+</head>
+<body>
+<nav>
+    <form th:action="@{/}">
+        <button type="submit">Strona główna</button>
+    </form>
+    <div sec:authorize="isAnonymous()">
+        <form th:action="@{/login}">
+            <button type="submit">Logowanie</button>
+        </form>
+        <form th:action="@{/register}">
+            <button type="submit">Rejestracja</button>
+        </form>
+    </div>
+    <div sec:authorize="isAuthenticated()">
+        <form th:action="@{/notes}">
+            <button type="submit">Notatki</button>
+        </form>
+        <form th:action="@{/manage}">
+            <button type="submit">Konto</button>
+        </form>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit">Wyloguj się</button>
+        </form>
+    </div>
+</nav>
+<h1>Zostałeś poprawnie wylogowany</h1>
+</body>
+</html>

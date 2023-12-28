@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Register</title>
+</head>
+<body>
+<nav>
+  <form th:action="@{/}">
+    <button type="submit">Strona główna</button>
+  </form>
+  <div sec:authorize="isAnonymous()">
+    <form th:action="@{/login}">
+      <button type="submit">Logowanie</button>
+    </form>
+    <form th:action="@{/register}">
+      <button type="submit">Rejestracja</button>
+    </form>
+  </div>
+  <div sec:authorize="isAuthenticated()">
+    <form th:action="@{/notes}">
+      <button type="submit">Notatki</button>
+    </form>
+    <form th:action="@{/manage}">
+      <button type="submit">Konto</button>
+    </form>
+    <form th:action="@{/logout}" method="post">
+      <button type="submit">Wyloguj się</button>
+    </form>
+  </div>
+</nav>
+<br>
+<form action="#" th:action="@{/register}" th:object="${form}" method="post">
+  <div th:if="${param.usernameerror != null}" th:text="${'Username already taken'}">
+
+  </div>
+  <td th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Username Error</td>
+  <div>
+    <input type="text" th:field="*{username}" placeholder="username"/>
+  </div>
+  <div>
+    <td th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password Error</td>
+    <span th:if="${#fields.hasErrors('password')}" th:text="${#fields.errors('password')}"></span>
+    <input type="password" th:field="*{password}" placeholder="password"/>
+  </div>
+  <div>
+    <input type="password" th:field="*{matchingPassword}" placeholder="password"/>
+  </div>
+  <input type="checkbox" th:field="*{isUsing2FA}" th:default="false">Enable 2-step authentication?
+  <div>
+    <div>
+      <button type="submit" value="process-register" >Register</button>
+    </div>
+  </div>
+</form>
+</body>
+</html>

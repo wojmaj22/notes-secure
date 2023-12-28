@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Dodaj nową notatkę</title>
+</head>
+<body>
+<nav>
+    <form th:action="@{/}">
+        <button type="submit">Strona główna</button>
+    </form>
+    <div sec:authorize="isAnonymous()">
+        <form th:action="@{/login}">
+            <button type="submit">Logowanie</button>
+        </form>
+        <form th:action="@{/register}">
+            <button type="submit">Rejestracja</button>
+        </form>
+    </div>
+    <div sec:authorize="isAuthenticated()">
+        <form th:action="@{/notes}">
+            <button type="submit">Notatki</button>
+        </form>
+        <form th:action="@{/manage}">
+            <button type="submit">Konto</button>
+        </form>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit">Wyloguj się</button>
+        </form>
+    </div>
+</nav>
+<br>
+<h1>Dodaj Nową Notatkę</h1>
+<form th:action="@{/notes/add}" th:object="${note}" method="post">
+
+    <label for="noteName">Nazwa notatki:</label>
+    <input type="text" id="noteName" name="noteName" th:field="*{name}" required>
+    <br>
+
+    <label for="noteText">Tekst notatki:</label>
+    <textarea id="noteText" name="noteText" th:field="*{text}" required></textarea>
+    <br>
+
+    <label for="password">Hasło:</label>
+    <input type="password" id="password" name="password" th:field="*{password}">
+    <br>
+
+    <label for="isPublic">Czy jest publiczna:</label>
+    <input type="checkbox" id="isPublic" name="isPublic" th:field="*{isPublic}">
+    <br>
+
+    <button type="submit">Dodaj Notatkę</button>
+</form>
+</body>
+</html>

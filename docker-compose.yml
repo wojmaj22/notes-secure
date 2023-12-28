@@ -1,0 +1,36 @@
+version: "3.8"
+
+networks:
+    my_network:
+        driver: bridge
+
+services:
+    postgres:
+        image: "postgres:latest"
+        container_name: postgres-notes
+        environment:
+            - POSTGRES_DB=app_db
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=gLKTzE@r7^NW
+        healthcheck:
+            test: "pg_isready -U postgres"
+        networks:
+            - my_network
+
+    backend:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: backend-notes
+        ports:
+            -   "8443:8443"
+        depends_on:
+            postgres:
+                condition: service_started
+        networks:
+            - my_network
+        environment:
+            - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-notes:5432/app_db
+            - SPRING_DATASOURCE_USERNAME=postgres
+            - SPRING_DATASOURCE_PASSWORD=gLKTzE@r7^NW
+            - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
