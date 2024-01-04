@@ -23,7 +23,7 @@ services:
             dockerfile: Dockerfile
         container_name: backend-notes
         ports:
-            -   "8443:8443"
+            - "8443:8443"
         depends_on:
             postgres:
                 condition: service_started

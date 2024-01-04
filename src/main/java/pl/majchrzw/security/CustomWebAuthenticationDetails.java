@@ -12,7 +12,7 @@ public class CustomWebAuthenticationDetails extends WebAuthenticationDetails {
 		verificationCode = request.getParameter("code");
 	}
 	
-	public String getVerificationCode(){
+	public String getVerificationCode() {
 		return verificationCode;
 	}
 }

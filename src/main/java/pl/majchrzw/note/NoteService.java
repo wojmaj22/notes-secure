@@ -31,12 +31,18 @@ public class NoteService {
 	
 	private final String algorithm = "AES/CBC/PKCS5Padding";
 	
+	private static IvParameterSpec generateIv() {
+		byte[] iv = new byte[16];
+		new SecureRandom().nextBytes(iv);
+		return new IvParameterSpec(iv);
+	}
+	
 	public Note saveNote(NoteDTO noteDTO) throws Exception {
 		//Parser parser = Parser.builder().build();
 		Node document = parser.parse(noteDTO.getText());
 		//HtmlRenderer renderer = HtmlRenderer.builder().escapeHtml(true).build();
 		String parsedText = renderer.render(document);
-		if (noteDTO.getPassword() == null || noteDTO.getPassword().equals("")){
+		if (noteDTO.getPassword() == null || noteDTO.getPassword().equals("")) {
 			Note note = Note.builder()
 					.name(noteDTO.getName())
 					.text(parsedText)
@@ -46,7 +52,7 @@ public class NoteService {
 					.build();
 			return noteRepository.save(note);
 		} else {
-			if ( noteDTO.getIsPublic() ){
+			if (noteDTO.getIsPublic()) {
 				throw new IllegalArgumentException("Szyfrowana notatka nie może być publiczna.");
 			}
 			SecretKey key = getKey(noteDTO.getPassword());
@@ -66,14 +72,14 @@ public class NoteService {
 		}
 	}
 	
-	public Note getNote(Integer id, String password) throws Exception{
+	public Note getNote(Integer id, String password) throws Exception {
 		Optional<Note> noteOptional = noteRepository.findById(id);
-		if ( noteOptional.isEmpty()){
+		if (noteOptional.isEmpty()) {
 			throw new EntityNotFoundException("No note with id: " + id + ", has been found.");
 		}
 		Note note = noteOptional.get();
 		if (note.getIv() != null) {
-			if ( password == null){
+			if (password == null) {
 				throw new IllegalStateException("No password provided to decrypt an encrypted note");
 			}
 			String cipherText = noteOptional.get().getText();
@@ -88,52 +94,46 @@ public class NoteService {
 		return note;
 	}
 	
-	public Note getNote(Integer id){
+	public Note getNote(Integer id) {
 		return noteRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("No note with id: " + id + ", has been found"));
 	}
 	
-	public List<Note> getNotes(){
+	public List<Note> getNotes() {
 		List<Note> notes = noteRepository.findAll();
-		for ( Note note: notes){
+		for (Note note : notes) {
 			note.setIv("".getBytes());
 		}
 		return notes;
 	}
 	
-	public List<Note> getPublicNotes(){
+	public List<Note> getPublicNotes() {
 		List<Note> notes = noteRepository.findAllByIsPublicIsTrue();
-		for ( Note note: notes){
+		for (Note note : notes) {
 			note.setIv("".getBytes());
 		}
 		return notes;
 	}
 	
-	public List<Note> getNotesByUsername(String username){
+	public List<Note> getNotesByUsername(String username) {
 		List<Note> notes = noteRepository.findAllByUsername(username);
-		for ( Note note: notes){
+		for (Note note : notes) {
 			note.setIv("".getBytes());
 		}
 		return notes;
 	}
 	
-	public void deleteNoteById(Integer id){
+	public void deleteNoteById(Integer id) {
 		noteRepository.deleteById(id);
 	}
 	
-	public boolean isNoteEncrypted(Integer id){
+	public boolean isNoteEncrypted(Integer id) {
 		Note note = noteRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("No note with id: " + id + ", has been found"));
 		return note.getIv() != null;
 	}
 	
-	private SecretKey getKey(String password) throws Exception{
+	private SecretKey getKey(String password) throws Exception {
 		SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
 		KeySpec keySpec = new PBEKeySpec(password.toCharArray(), "1234".getBytes(), 65536, 256);
 		return new SecretKeySpec(keyFactory.generateSecret(keySpec).getEncoded(), "AES");
-	}
-	
-	private static IvParameterSpec generateIv() {
-		byte[] iv = new byte[16];
-		new SecureRandom().nextBytes(iv);
-		return new IvParameterSpec(iv);
 	}
 }

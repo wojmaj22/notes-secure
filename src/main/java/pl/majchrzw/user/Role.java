@@ -8,7 +8,7 @@ public enum Role {
 	USER,
 	ADMIN;
 	
-	public List<SimpleGrantedAuthority> getAuthorities(){
-		return List.of(new SimpleGrantedAuthority("ROLE_"+this.name()));
+	public List<SimpleGrantedAuthority> getAuthorities() {
+		return List.of(new SimpleGrantedAuthority("ROLE_" + this.name()));
 	}
 }

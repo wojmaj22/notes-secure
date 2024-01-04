@@ -1,4 +1,4 @@
-package pl.majchrzw.util;
+package pl.majchrzw.validators;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -11,15 +11,14 @@ import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Documented
-@Constraint(validatedBy = PasswordConstraintValidator.class)
-@Target({ TYPE, FIELD, ANNOTATION_TYPE })
+@Constraint(validatedBy = UsernameTakenValidator.class)
+@Target({TYPE, FIELD, ANNOTATION_TYPE})
 @Retention(RUNTIME)
-public @interface ValidPassword {
+public @interface UsernameTaken {
 	
-	String message() default "Invalid Password";
+	String message() default "Nazwa jest już zajęta";
 	
 	Class<?>[] groups() default {};
 	
 	Class<? extends Payload>[] payload() default {};
-	
 }

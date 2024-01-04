@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="pl" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Podaj hasło</title>
+    <link rel="stylesheet" th:href="@{/styles.css}"/>
 </head>
 <body>
 <nav>
@@ -13,6 +14,8 @@
         <form th:action="@{/login}">
             <button type="submit">Logowanie</button>
         </form>
+    </div>
+    <div sec:authorize="isAnonymous()">
         <form th:action="@{/register}">
             <button type="submit">Rejestracja</button>
         </form>
@@ -21,19 +24,23 @@
         <form th:action="@{/notes}">
             <button type="submit">Notatki</button>
         </form>
+    </div>
+    <div sec:authorize="isAuthenticated()">
         <form th:action="@{/manage}">
             <button type="submit">Konto</button>
         </form>
-        <form th:action="@{/logout}" method="post">
+    </div>
+    <div sec:authorize="isAuthenticated()">
+        <form method="post" th:action="@{/logout}">
             <button type="submit">Wyloguj się</button>
         </form>
     </div>
 </nav>
-<h1>Notatka zaszyforwana - poda hasło:</h1>
+<h1>Notatka zaszyforwana - podaj hasło:</h1>
 <br>
-<form th:action="@{/notes/decrypt}" th:object="${passwordDTO}" method="post">
-    <input type="hidden" th:field="*{id}" th:value="${passwordDTO.id}">
-    <input type="password" id="password" th:field="*{password}" required/>
+<form method="post" th:action="@{/notes/decrypt}" th:object="${passwordDTO}">
+    <input th:field="*{id}" th:value="${passwordDTO.id}" type="hidden">
+    <input id="password" required th:field="*{password}" type="password"/>
     <br/>
     <button type="submit">Odszyfruj notatkę</button>
 </form>

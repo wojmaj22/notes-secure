@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.majchrzw.util.ValidPassword;
+import pl.majchrzw.validators.ValidPassword;
 
 @Data
 @AllArgsConstructor

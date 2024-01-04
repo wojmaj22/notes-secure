@@ -1,21 +1,25 @@
 package pl.majchrzw.dto;
 
 
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
-import pl.majchrzw.util.ValidPassword;
+import pl.majchrzw.validators.PasswordMatches;
+import pl.majchrzw.validators.UsernameTaken;
+import pl.majchrzw.validators.ValidPassword;
 
 @Data
+@PasswordMatches
 public class RegisterUserDTO {
 	@NotNull
 	@NotEmpty
-	@Length(min = 6)
+	@Length(min = 6, max = 32)
+	@UsernameTaken()
 	private String username;
 	@NotNull
 	@NotEmpty
-	@ValidPassword
+	@ValidPassword()
 	private String password;
 	@NotNull
 	@NotEmpty

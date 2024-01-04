@@ -7,6 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+
 @Setter
 @Getter
 @Builder
@@ -17,14 +18,14 @@ import java.util.Collection;
 public class User implements UserDetails {
 	
 	@Id
-	@GeneratedValue( strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
 	@Column(unique = true)
 	private String username;
 	
 	private String password;
-
+	
 	private boolean enabled;
 	
 	private boolean isUsing2FA;

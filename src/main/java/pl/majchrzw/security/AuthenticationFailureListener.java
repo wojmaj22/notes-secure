@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.authentication.event.AuthenticationFailureBadCredentialsEvent;
 import org.springframework.stereotype.Component;
-import pl.majchrzw.util.LoginAttemptService;
 
 @Component
 @RequiredArgsConstructor
@@ -15,13 +14,13 @@ public class AuthenticationFailureListener {
 	private final LoginAttemptService loginAttemptService;
 	
 	@EventListener
-	public void onAuthenticationFailure(AuthenticationFailureBadCredentialsEvent event){
+	public void onAuthenticationFailure(AuthenticationFailureBadCredentialsEvent event) {
 		final String xFHeader = request.getHeader("X-Forwarded-For");
-		if ( xFHeader == null || xFHeader.equals("") || !xFHeader.contains(request.getRemoteAddr())){
+		if (xFHeader == null || xFHeader.equals("") || !xFHeader.contains(request.getRemoteAddr())) {
 			loginAttemptService.loginFailed(request.getRemoteAddr());
 		} else {
 			loginAttemptService.loginFailed(xFHeader.split(",")[0]);
 		}
-	
+		
 	}
 }

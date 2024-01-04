@@ -2,7 +2,7 @@
 <html lang="pl" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Logowanie</title>
+    <title>Wprowadź hasło</title>
     <link rel="stylesheet" th:href="@{/styles.css}"/>
 </head>
 <body>
@@ -36,26 +36,16 @@
         </form>
     </div>
 </nav>
-<br>
-<h1>Zaloguj się</h1>
-<div th:if="${param.error}">
-    Błędna nazwa użytkownika lub hasło
+
+<div th:if="${msg}">
+    <p th:text="${msg}"></p>
 </div>
-<div th:if="${param.logout}">
-    Zostałeś poprawnie wylogowany
-</div>
-<form class="register" method="post" th:action="@{/process-login}">
-
-    <label for="username">Nazwa użytkownika</label>
-    <input id="username" name="username" placeholder="Username" type="text"/>
-
-    <label for="username">Hasło</label>
-    <input id="password" name="password" placeholder="Password" type="password"/>
-
-    <label for="2FA">Token 2FA - jeżeli używasz</label>
-    <input id="2FA" name='code' placeholder="2FA Token" type='text'/>
-
-    <input type="submit" value="Zaloguj się"/>
+<h2>Wprowadź hasło aby usunąć zaszyfrowaną notatkę:</h2>
+<form method="post" th:action="@{/notes/delete/encrypted}" th:object="${form}">
+    <input th:field="*{id}" th:value="${form.id}" type="hidden">
+    <input id="password" required th:field="*{password}" type="password"/>
+    <br/>
+    <button type="submit">Usuń notatkę</button>
 </form>
 </body>
 </html>

@@ -1,4 +1,4 @@
-package pl.majchrzw.util;
+package pl.majchrzw.security;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -19,7 +19,7 @@ public class LoginAttemptService {
 	@Autowired
 	private HttpServletRequest request;
 	
-	public LoginAttemptService(){
+	public LoginAttemptService() {
 		attemptsCache = CacheBuilder.newBuilder().expireAfterWrite(Duration.ofDays(1)).build(new CacheLoader<String, Integer>() {
 			@Override
 			public Integer load(String key) throws Exception {
@@ -32,11 +32,11 @@ public class LoginAttemptService {
 		int attempts;
 		try {
 			attempts = attemptsCache.get(address);
-		} catch ( ExecutionException e){
+		} catch (ExecutionException e) {
 			attempts = 0;
 		}
 		attempts++;
-		attemptsCache.put(address,attempts);
+		attemptsCache.put(address, attempts);
 	}
 	
 	public boolean isBlocked() {

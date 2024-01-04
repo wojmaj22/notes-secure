@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="pl" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Notatki</title>
+    <link rel="stylesheet" th:href="@{/styles.css}"/>
 </head>
 <body>
 <nav>
@@ -13,6 +14,8 @@
         <form th:action="@{/login}">
             <button type="submit">Logowanie</button>
         </form>
+    </div>
+    <div sec:authorize="isAnonymous()">
         <form th:action="@{/register}">
             <button type="submit">Rejestracja</button>
         </form>
@@ -21,10 +24,14 @@
         <form th:action="@{/notes}">
             <button type="submit">Notatki</button>
         </form>
+    </div>
+    <div sec:authorize="isAuthenticated()">
         <form th:action="@{/manage}">
             <button type="submit">Konto</button>
         </form>
-        <form th:action="@{/logout}" method="post">
+    </div>
+    <div sec:authorize="isAuthenticated()">
+        <form method="post" th:action="@{/logout}">
             <button type="submit">Wyloguj się</button>
         </form>
     </div>
@@ -33,7 +40,7 @@
 <h1>Notatki dostępne publicznie:</h1>
 <ul>
     <li th:each="note : ${notes}">
-        <span th:text="${note.id}"></span> - <span th:text="${note.name}"></span>
+        <span th:text="${note.name}"></span>
         <a th:href="@{'/notes/details/' + ${note.id}}">Szczegóły</a>
     </li>
 </ul>

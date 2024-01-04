@@ -1,5 +1,7 @@
 package pl.majchrzw.user;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -22,20 +24,19 @@ public class UserController {
 	private final CustomUserDetailsService userService;
 	
 	@GetMapping("/register")
-	public String register(Model model){
+	public String register(Model model) {
 		model.addAttribute("form", new RegisterUserDTO());
 		return "register";
 	}
 	
 	@PostMapping("/register")
-	public String processRegister(@ModelAttribute @Valid RegisterUserDTO userDTO, Model model, BindingResult result) throws Exception{
-		if( !userDTO.getPassword().equals(userDTO.getMatchingPassword()) || result.hasErrors()){
-			model.addAttribute("error", "Password does not match!");
-			return "redirect:/register";
-			// TODO - tutaj chyba zmienić sposób w jaki jest pokazywane że hasła są różne
+	public String processRegister(@Valid @ModelAttribute("form") RegisterUserDTO form, BindingResult bindingResult, Model model) {
+		if (bindingResult.hasErrors()) {
+			return "register";
 		}
-		User user = userService.registerUser(userDTO);
-		if ( userDTO.getIsUsing2FA()){
+		User user = userService.registerUser(form);
+		
+		if (form.getIsUsing2FA()) {
 			model.addAttribute("qr", userService.generateQRCode(user));
 			return "qrcode";
 		} else {
@@ -44,7 +45,7 @@ public class UserController {
 	}
 	
 	@GetMapping("/manage")
-	public String manage(Model model, Principal principal){
+	public String manage(Model model, Principal principal) {
 		model.addAttribute("passwordForm", new ChangePasswordDTO());
 		ChangeTotpDTO totpDTO = new ChangeTotpDTO();
 		totpDTO.setIsEnabledTotp(userService.loadUserByUsername(principal.getName()).isUsing2FA());
@@ -60,8 +61,8 @@ public class UserController {
 	
 	
 	@PostMapping("/change-password")
-	public String changePassword(Principal principal, @ModelAttribute @Valid ChangePasswordDTO dto, BindingResult result){
-		if(!dto.getNewPassword().equals(dto.getNewPasswordRepeat()) || result.hasErrors()){
+	public String changePassword(Principal principal, @ModelAttribute @Valid ChangePasswordDTO dto, BindingResult result) {
+		if (!dto.getNewPassword().equals(dto.getNewPasswordRepeat()) || result.hasErrors()) {
 			return "redirect:/manage";
 		} else {
 			userService.changeUserPassword(principal.getName(), dto);
@@ -70,14 +71,14 @@ public class UserController {
 	}
 	
 	@PostMapping("/change-totp")
-	public String changeTotp(Principal principal, @ModelAttribute ChangeTotpDTO dto, Model model) throws Exception {
+	public String changeTotp(Principal principal, @ModelAttribute ChangeTotpDTO dto, Model model) {
 		User user = userService.loadUserByUsername(principal.getName());
-		if ( dto.getIsEnabledTotp() && !user.isUsing2FA()){
+		if (dto.getIsEnabledTotp() && !user.isUsing2FA()) {
 			// włączyć
 			userService.enable2FA(user);
 			model.addAttribute("qr", userService.generateQRCode(user));
 			return "qrcode";
-		} else if ( !dto.getIsEnabledTotp() && user.isUsing2FA()){
+		} else if (!dto.getIsEnabledTotp() && user.isUsing2FA()) {
 			// wyłączyć
 			userService.disable2FA(user);
 			return "redirect:/notes";
@@ -87,11 +88,16 @@ public class UserController {
 	}
 	
 	@GetMapping("/delete-account")
-	public String deleteAccount(Principal principal, Authentication authentication){
+	public String confirm() {
+		return "confirm";
+	}
+	
+	@GetMapping("/confirm-delete")
+	public String deleteAccount(Principal principal, Authentication authentication, HttpServletRequest request) throws ServletException {
 		userService.deleteUser(principal.getName());
+		request.logout();
 		authentication.setAuthenticated(false);
 		return "redirect:/";
 	}
-	
 	
 }

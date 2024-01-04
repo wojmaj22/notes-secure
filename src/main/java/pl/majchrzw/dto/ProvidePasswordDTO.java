@@ -11,9 +11,10 @@ public class ProvidePasswordDTO {
 		this.id = id;
 	}
 	
-	public ProvidePasswordDTO(){}
+	public ProvidePasswordDTO() {
+	}
 	
-	public ProvidePasswordDTO(Integer id, String password){
+	public ProvidePasswordDTO(Integer id, String password) {
 		this.password = password;
 		this.id = id;
 	}

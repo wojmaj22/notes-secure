@@ -12,7 +12,7 @@ import java.security.SecureRandom;
 public class SecurityUtils {
 	
 	@Bean
-	public PasswordEncoder passwordEncoder(){
+	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 	

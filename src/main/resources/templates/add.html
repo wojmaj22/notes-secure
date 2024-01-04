@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="pl" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Dodaj nową notatkę</title>
+    <link rel="stylesheet" th:href="@{/styles.css}"/>
 </head>
 <body>
 <nav>
@@ -13,6 +14,8 @@
         <form th:action="@{/login}">
             <button type="submit">Logowanie</button>
         </form>
+    </div>
+    <div sec:authorize="isAnonymous()">
         <form th:action="@{/register}">
             <button type="submit">Rejestracja</button>
         </form>
@@ -21,32 +24,36 @@
         <form th:action="@{/notes}">
             <button type="submit">Notatki</button>
         </form>
+    </div>
+    <div sec:authorize="isAuthenticated()">
         <form th:action="@{/manage}">
             <button type="submit">Konto</button>
         </form>
-        <form th:action="@{/logout}" method="post">
+    </div>
+    <div sec:authorize="isAuthenticated()">
+        <form method="post" th:action="@{/logout}">
             <button type="submit">Wyloguj się</button>
         </form>
     </div>
 </nav>
 <br>
 <h1>Dodaj Nową Notatkę</h1>
-<form th:action="@{/notes/add}" th:object="${note}" method="post">
+<form class="register" method="post" th:action="@{/notes/add}" th:object="${note}">
 
     <label for="noteName">Nazwa notatki:</label>
-    <input type="text" id="noteName" name="noteName" th:field="*{name}" required>
+    <input id="noteName" name="noteName" required th:field="*{name}" type="text">
     <br>
 
     <label for="noteText">Tekst notatki:</label>
-    <textarea id="noteText" name="noteText" th:field="*{text}" required></textarea>
+    <textarea id="noteText" name="noteText" required th:field="*{text}"></textarea>
     <br>
 
     <label for="password">Hasło:</label>
-    <input type="password" id="password" name="password" th:field="*{password}">
+    <input id="password" name="password" th:field="*{password}" type="password">
     <br>
 
     <label for="isPublic">Czy jest publiczna:</label>
-    <input type="checkbox" id="isPublic" name="isPublic" th:field="*{isPublic}">
+    <input id="isPublic" name="isPublic" th:field="*{isPublic}" type="checkbox">
     <br>
 
     <button type="submit">Dodaj Notatkę</button>

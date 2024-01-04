@@ -1,0 +1,48 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 10px;
+}
+
+nav a {
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+main {
+    flex: 1;
+    text-align: center;
+    padding: 20px;
+}
+
+.error {
+    color: red;
+}
+
+.register {
+    display: flex;
+    flex-direction: column;
+    max-width: 300px;
+    margin: auto;
+}
+
+label {
+    margin-bottom: 5px;
+}
+
+input, span {
+    margin-bottom: 10px;
+}
+
+button {
+    margin-left: 5px;
+    margin-right: 5px;
+}

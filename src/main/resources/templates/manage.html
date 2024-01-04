@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="pl" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Zarządzaj kontem</title>
+    <link rel="stylesheet" th:href="@{/styles.css}"/>
 </head>
 <body>
 <nav>
@@ -13,6 +14,8 @@
         <form th:action="@{/login}">
             <button type="submit">Logowanie</button>
         </form>
+    </div>
+    <div sec:authorize="isAnonymous()">
         <form th:action="@{/register}">
             <button type="submit">Rejestracja</button>
         </form>
@@ -21,10 +24,14 @@
         <form th:action="@{/notes}">
             <button type="submit">Notatki</button>
         </form>
+    </div>
+    <div sec:authorize="isAuthenticated()">
         <form th:action="@{/manage}">
             <button type="submit">Konto</button>
         </form>
-        <form th:action="@{/logout}" method="post">
+    </div>
+    <div sec:authorize="isAuthenticated()">
+        <form method="post" th:action="@{/logout}">
             <button type="submit">Wyloguj się</button>
         </form>
     </div>
@@ -33,23 +40,23 @@
 <span>Aktualnie zalogowany użytkownik:</span>
 <span th:text="${username}"></span>
 <h1>Zmień hasło</h1>
-<form action="#" th:action="@{/change-password}" method="post" th:object="${passwordForm}">
+<form action="#" method="post" th:action="@{/change-password}" th:object="${passwordForm}">
     <label for="currentPassword">Aktualne Hasło:</label>
-    <input type="password" id="currentPassword" name="currentPassword" th:field="*{oldPassword}" required><br>
+    <input id="currentPassword" name="currentPassword" required th:field="*{oldPassword}" type="password"><br>
 
     <label for="newPassword">Nowe Hasło:</label>
-    <input type="password" id="newPassword" name="newPassword" th:field="*{newPassword}" required><br>
+    <input id="newPassword" name="newPassword" required th:field="*{newPassword}" type="password"><br>
 
     <label for="confirmPassword">Potwierdź Nowe Hasło:</label>
-    <input type="password" id="confirmPassword" name="confirmPassword" th:field="*{newPasswordRepeat}" required><br>
+    <input id="confirmPassword" name="confirmPassword" required th:field="*{newPasswordRepeat}" type="password"><br>
 
     <input type="submit" value="Zmień Hasło">
 </form>
 <br>
 <h1>Zmień stan TOTP</h1>
-<form action="#" th:action="@{/change-totp}" method="post" th:object="${totpForm}">
+<form action="#" method="post" th:action="@{/change-totp}" th:object="${totpForm}">
     <label for="totp">Włącz/wyłącz TOTP(aktualny stan pokazany):</label>
-    <input type="checkbox" id="totp" name="totp" th:field="*{isEnabledTotp}"><br>
+    <input id="totp" name="totp" th:field="*{isEnabledTotp}" type="checkbox"><br>
     <input type="submit" value="Zapisz">
 </form>
 <br>

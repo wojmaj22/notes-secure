@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="pl" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
-    <title>Logowanie</title>
+    <title>Potwierdź akcję</title>
     <link rel="stylesheet" th:href="@{/styles.css}"/>
 </head>
 <body>
@@ -36,26 +37,7 @@
         </form>
     </div>
 </nav>
-<br>
-<h1>Zaloguj się</h1>
-<div th:if="${param.error}">
-    Błędna nazwa użytkownika lub hasło
-</div>
-<div th:if="${param.logout}">
-    Zostałeś poprawnie wylogowany
-</div>
-<form class="register" method="post" th:action="@{/process-login}">
-
-    <label for="username">Nazwa użytkownika</label>
-    <input id="username" name="username" placeholder="Username" type="text"/>
-
-    <label for="username">Hasło</label>
-    <input id="password" name="password" placeholder="Password" type="password"/>
-
-    <label for="2FA">Token 2FA - jeżeli używasz</label>
-    <input id="2FA" name='code' placeholder="2FA Token" type='text'/>
-
-    <input type="submit" value="Zaloguj się"/>
-</form>
+<h2>Czy napewno chcesz usunąć konto?</h2>
+<a th:href="@{/confirm-delete}">Usuń konto</a>
 </body>
 </html>
