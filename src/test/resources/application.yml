@@ -1,0 +1,22 @@
+spring:
+    datasource:
+        driver-class-name: org.postgresql.Driver
+    jpa:
+        hibernate:
+            ddl-auto: create
+        show-sql: true
+
+    mail:
+        username: user
+        password: admin
+        host: 127.0.0.1
+        port: 3025
+        protocol: smtp
+
+server:
+    ssl:
+        key-store: keystore.jks
+        key-store-password: password
+        key-store-type: jks
+        key-alias: notes
+        key-password: password

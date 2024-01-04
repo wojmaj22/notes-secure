@@ -51,7 +51,7 @@ public class AuthenticationSuccessListener {
 		String deviceDetails = "";
 		Parser parser = new Parser();
 		Client client = parser.parse(request.getHeader("user-agent"));
-		if (Objects.nonNull(client)) {
+		if (Objects.nonNull(client) && client.userAgent != null) {
 			deviceDetails = client.userAgent.family + " " + client.userAgent.major + "." + client.userAgent.minor +
 					" - " + client.os.family + " " + client.os.major;
 		}

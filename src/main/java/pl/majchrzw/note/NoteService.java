@@ -38,7 +38,7 @@ public class NoteService {
 		return new IvParameterSpec(iv);
 	}
 	
-	public void saveNote(NoteDTO noteDTO) throws Exception {
+	public Note saveNote(NoteDTO noteDTO) throws Exception {
 		Node document = parser.parse(noteDTO.getText());
 		String parsedText = renderer.render(document);
 		if (noteDTO.getPassword() == null || noteDTO.getPassword().equals("")) {
@@ -49,7 +49,7 @@ public class NoteService {
 					.iv(null)
 					.isPublic(noteDTO.getIsPublic())
 					.build();
-			noteRepository.save(note);
+			return noteRepository.save(note);
 		} else {
 			if (noteDTO.getIsPublic()) {
 				throw new IllegalArgumentException("Szyfrowana notatka nie może być publiczna.");
@@ -71,7 +71,7 @@ public class NoteService {
 					.salt(salt)
 					.isPublic(noteDTO.getIsPublic())
 					.build();
-			noteRepository.save(note);
+			return noteRepository.save(note);
 		}
 	}
 	

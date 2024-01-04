@@ -36,7 +36,6 @@ public class PasswordResetController {
 	
 	@PostMapping("/password-reset")
 	public String sendEmailForReset(@Valid @ModelAttribute("form") EmailFormDTO form, BindingResult result, Model model){
-		// TODO - sprawdzić czy opóźnienie jest takie same
 		if ( result.hasErrors()){
 			return "forgot-password/email-form";
 		}

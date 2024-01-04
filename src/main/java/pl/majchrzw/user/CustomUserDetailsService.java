@@ -112,7 +112,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 	private BufferedImage generateQRImage(User user) {
 		String text = "otpauth://totp/notes:" + user.getUsername() + "?secret=" + user.getSecret() + "&issuer=notes";
 		QRCodeWriter writer = new QRCodeWriter();
-		BitMatrix bitMatrix = null;
+		BitMatrix bitMatrix;
 		try {
 			bitMatrix = writer.encode(text, BarcodeFormat.QR_CODE, 200, 200);
 		} catch (WriterException e) {
@@ -140,11 +140,15 @@ public class CustomUserDetailsService implements UserDetailsService {
 	}
 	
 	public void sendActivationEmail(RegistrationToken token, User user){
-		String msgBody = "Kliknij w link aby aktywować konto - https://localhost:8443/activate?token=" + token.getToken() + "&user=" + user.getUsername() + "\n Jeżeli link nie działa zmień 'localhost' na poprawny adres aplikacji";
-
+		StringBuilder builder = new StringBuilder();
+		builder.append("https://localhost:8443/activate?token=");
+		builder.append(token.getToken());
+		builder.append("&user=");
+		builder.append(user.getUsername());
+		
 		SimpleMailMessage mailMessage = new SimpleMailMessage();
 		mailMessage.setSubject("Aktywuj konto");
-		mailMessage.setText(msgBody);
+		mailMessage.setText(builder.toString());
 		mailMessage.setTo(user.getEmail());
 		mailMessage.setFrom("wojjmaj22@gmail.com");
 		
