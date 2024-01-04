@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.majchrzw.validators.ValidPassword;
+import pl.majchrzw.validators.PasswordValid;
 
 @Data
 @AllArgsConstructor
@@ -17,7 +17,7 @@ public class ChangePasswordDTO {
 	
 	@Nonnull
 	@NotEmpty
-	@ValidPassword
+	@PasswordValid
 	private String newPassword;
 	
 	@Nonnull

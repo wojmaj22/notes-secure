@@ -5,6 +5,7 @@ import lombok.*;
 import org.jboss.aerogear.security.otp.api.Base32;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import pl.majchrzw.passwordreset.PasswordResetToken;
 
 import java.util.Collection;
 
@@ -24,6 +25,9 @@ public class User implements UserDetails {
 	@Column(unique = true)
 	private String username;
 	
+	@Column(unique = true)
+	private String email;
+	
 	private String password;
 	
 	private boolean enabled;
@@ -33,6 +37,9 @@ public class User implements UserDetails {
 	private String secret;
 	
 	private Role role;
+	
+	@OneToOne(mappedBy = "user")
+	private PasswordResetToken resetToken;
 	
 	public User(String username, String password, boolean enabled, boolean isUsing2FA, Role role) {
 		this.username = username;

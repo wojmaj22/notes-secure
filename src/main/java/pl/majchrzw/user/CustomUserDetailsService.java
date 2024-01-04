@@ -51,6 +51,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 		User user = User.builder()
 				.enabled(true)
 				.username(registerUserDTO.getUsername())
+				.email(registerUserDTO.getEmail())
 				.password(passwordEncoder.encode(registerUserDTO.getPassword()))
 				.role(Role.USER)
 				.build();
@@ -64,9 +65,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 		return userRepository.save(user);
 	}
 	
-	public User changeUserPassword(String username, ChangePasswordDTO dto) {
+	public User changeUserPassword(String username, String password) {
 		User user = loadUserByUsername(username);
-		user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+		user.setPassword(passwordEncoder.encode(password));
 		return userRepository.save(user);
 	}
 	
@@ -108,5 +109,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 			return null;
 		}
 		return MatrixToImageWriter.toBufferedImage(bitMatrix);
+	}
+	
+	public boolean existsByEmail(String email){
+		return userRepository.existsByEmail(email);
 	}
 }

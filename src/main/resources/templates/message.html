@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <title>Podaj email</title>
+  <link rel="stylesheet" th:href="@{/styles.css}"/>
+</head>
+<body>
+<nav>
+  <form th:action="@{/}">
+    <button type="submit">Strona główna</button>
+  </form>
+  <div sec:authorize="isAnonymous()">
+    <form th:action="@{/login}">
+      <button type="submit">Logowanie</button>
+    </form>
+  </div>
+  <div sec:authorize="isAnonymous()">
+    <form th:action="@{/register}">
+      <button type="submit">Rejestracja</button>
+    </form>
+  </div>
+  <div sec:authorize="isAuthenticated()">
+    <form th:action="@{/notes}">
+      <button type="submit">Notatki</button>
+    </form>
+  </div>
+  <div sec:authorize="isAuthenticated()">
+    <form th:action="@{/manage}">
+      <button type="submit">Konto</button>
+    </form>
+  </div>
+  <div sec:authorize="isAuthenticated()">
+    <form method="post" th:action="@{/logout}">
+      <button type="submit">Wyloguj się</button>
+    </form>
+  </div>
+</nav>
+<br>
+<div th:if="${message}">
+  <p th:text="${message}"></p>
+</div>
+</body>
+</html>

@@ -6,10 +6,10 @@ import jakarta.validation.ConstraintValidatorContext;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class PasswordConstraintValidator implements ConstraintValidator<ValidPassword, String> {
+public class PasswordValidator implements ConstraintValidator<PasswordValid, String> {
 	
 	@Override
-	public void initialize(ValidPassword arg0) {
+	public void initialize(PasswordValid arg0) {
 	}
 	
 	@Override

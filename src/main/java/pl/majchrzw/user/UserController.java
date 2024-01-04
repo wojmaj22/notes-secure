@@ -68,7 +68,7 @@ public class UserController {
 		if (!dto.getNewPassword().equals(dto.getNewPasswordRepeat()) || result.hasErrors()) {
 			return "redirect:/manage";
 		} else {
-			userService.changeUserPassword(principal.getName(), dto);
+			userService.changeUserPassword(principal.getName(), dto.getNewPassword());
 			return "redirect:/notes";
 		}
 	}
@@ -108,5 +108,5 @@ public class UserController {
 	public ResponseEntity<String> teapot(){
 		return new ResponseEntity<>("I’m a teapot.", HttpStatus.I_AM_A_TEAPOT);
 	}
-	
+
 }

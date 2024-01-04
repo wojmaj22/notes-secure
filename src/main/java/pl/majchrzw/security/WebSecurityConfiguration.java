@@ -39,7 +39,10 @@ public class WebSecurityConfiguration {
 						.requestMatchers("/").permitAll()
 						.requestMatchers("/login").permitAll()
 						.requestMatchers("/register").permitAll()
+						.requestMatchers("/password-reset").permitAll()
+						.requestMatchers("/password-reset-form*").permitAll()
 						.requestMatchers("/teapot").permitAll()
+
 						.requestMatchers("/notes/details/**").permitAll()
 						.anyRequest().authenticated())
 				.formLogin(form -> form

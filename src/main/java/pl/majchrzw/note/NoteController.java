@@ -66,6 +66,7 @@ public class NoteController {
 			model.addAttribute("error", "Notatka nie istnieje, lub nie masz do niej dostępu");
 			return "error";
 		}
+
 		if (note.getIv() != null) {
 			model.addAttribute("passwordDTO", new ProvidePasswordDTO(id));
 			return "decrypt";
@@ -95,9 +96,11 @@ public class NoteController {
 	public String delete(@PathVariable Integer id, Principal principal, Model model) {
 		Note note = noteService.getNote(id);
 		if (!note.getUsername().equals(principal.getName())) {
+
 			model.addAttribute("error", "Notatka nie istnieje, lub nie masz do niej dostępu");
 			return "error";
 		}
+
 		if (note.getIv() != null) {
 			model.addAttribute("form", new ProvidePasswordDTO(id));
 			return "delete";

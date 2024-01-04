@@ -44,6 +44,10 @@
     <input id="username" placeholder="username" th:field="*{username}" type="text"/>
     <p class="error" th:errors="*{username}" th:if="${#fields.hasErrors('username')}">Zła nazwa</p>
 
+    <label for="email">Email</label>
+    <input id="email" placeholder="email" th:field="*{email}" type="text"/>
+    <p class="error" th:errors="*{email}" th:if="${#fields.hasErrors('email')}">Zły email</p>
+
     <label for="password">Hasło</label>
     <input id="password" placeholder="password" th:field="*{password}" type="password"/>
     <p class="error" th:errors="*{password}" th:if="${#fields.hasErrors('password')}">Złe hasło</p>
@@ -56,7 +60,7 @@
     <label for="2FA">Włączyć 2FA?</label>
     <input id="2FA" th:default="false" th:field="*{isUsing2FA}" type="checkbox">
 
-    <p class="error" th:errors="*{global}" th:if="${#fields.hasErrors('global')}">Incorrect date</p>
+    <p class="error" th:errors="*{global}" th:if="${#fields.hasErrors('global')}">Błąd</p>
 
     <button type="submit" value="process-register">Zarejestruj się</button>
 
