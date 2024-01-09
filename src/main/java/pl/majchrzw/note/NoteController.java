@@ -1,5 +1,6 @@
 package pl.majchrzw.note;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -54,9 +55,15 @@ public class NoteController {
 	
 	@GetMapping("/notes/details/{id}")
 	public String noteDetails(@PathVariable Integer id, Model model, Principal principal) throws Exception {
-		Note note = noteService.getNote(id);
+		Note note;
+		try{
+			note = noteService.getNote(id);
+		} catch ( EntityNotFoundException e) {
+			model.addAttribute("error", "Notatka nie istnieje, lub nie masz do niej dostępu");
+			return "error";
+		}
 		if (!note.isPublic() && !note.getUsername().equals(principal.getName())) {
-			model.addAttribute("error", "Nie możesz odczytać tej notatki ponieważ nie należy do ciebie i nie jest publiczna");
+			model.addAttribute("error", "Notatka nie istnieje, lub nie masz do niej dostępu");
 			return "error";
 		}
 		if (note.getIv() != null) {
@@ -88,10 +95,9 @@ public class NoteController {
 	public String delete(@PathVariable Integer id, Principal principal, Model model) {
 		Note note = noteService.getNote(id);
 		if (!note.getUsername().equals(principal.getName())) {
-			model.addAttribute("error", "Nie możesz usunąć notatki która nie należy do ciebie");
+			model.addAttribute("error", "Notatka nie istnieje, lub nie masz do niej dostępu");
 			return "error";
 		}
-		// TODO - może dodać że jeżeli notatka jest zahasłowana to należy podać hasło przed usunięciem?
 		if (note.getIv() != null) {
 			model.addAttribute("form", new ProvidePasswordDTO(id));
 			return "delete";

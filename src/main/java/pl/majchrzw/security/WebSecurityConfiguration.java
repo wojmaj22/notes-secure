@@ -39,6 +39,7 @@ public class WebSecurityConfiguration {
 						.requestMatchers("/").permitAll()
 						.requestMatchers("/login").permitAll()
 						.requestMatchers("/register").permitAll()
+						.requestMatchers("/teapot").permitAll()
 						.requestMatchers("/notes/details/**").permitAll()
 						.anyRequest().authenticated())
 				.formLogin(form -> form
