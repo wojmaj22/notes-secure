@@ -86,6 +86,12 @@
             <artifactId>javase</artifactId>
             <version>3.4.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.ua-parser</groupId>
+            <artifactId>uap-java</artifactId>
+            <version>1.6.1</version>
+        </dependency>
+
     </dependencies>
 
     <build>

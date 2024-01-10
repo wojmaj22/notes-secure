@@ -10,10 +10,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import pl.majchrzw.devices.DeviceService;
 import pl.majchrzw.dto.ChangePasswordDTO;
 import pl.majchrzw.dto.ChangeTotpDTO;
 import pl.majchrzw.dto.RegisterUserDTO;
@@ -25,6 +23,8 @@ import java.security.Principal;
 public class UserController {
 	
 	private final CustomUserDetailsService userService;
+	
+	private final DeviceService deviceService;
 	
 	@GetMapping("/register")
 	public String register(Model model) {
@@ -43,7 +43,8 @@ public class UserController {
 			model.addAttribute("qr", userService.generateQRCode(user));
 			return "qrcode";
 		} else {
-			return "redirect:/login";
+			model.addAttribute("message", "Zostałeś poprawnie zarejestrowany, sprawdź maila aby aktywować konto");
+			return "message";
 		}
 	}
 	
@@ -53,6 +54,7 @@ public class UserController {
 		ChangeTotpDTO totpDTO = new ChangeTotpDTO();
 		totpDTO.setIsEnabledTotp(userService.loadUserByUsername(principal.getName()).isUsing2FA());
 		model.addAttribute("totpForm", totpDTO);
+		model.addAttribute("devices", deviceService.getDevicesByUsername(principal.getName()));
 		model.addAttribute("username", principal.getName());
 		return "manage";
 	}
@@ -101,6 +103,15 @@ public class UserController {
 		request.logout();
 		authentication.setAuthenticated(false);
 		return "redirect:/";
+	}
+	
+	@GetMapping("/activate")
+	public String activateAccount(@RequestParam("token") String token, Model model, @RequestParam("user") String username){
+		if( userService.activateAccount(token, username)){
+			model.addAttribute("message", "Konto zostało aktywowane możesz się zalogować");
+			return "message";
+		}
+		return "redirect:/login";
 	}
 	
 	@GetMapping("/teapot")

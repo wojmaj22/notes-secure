@@ -9,11 +9,14 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.jboss.aerogear.security.otp.api.Base32;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import pl.majchrzw.dto.ChangePasswordDTO;
+import pl.majchrzw.accountactivation.RegistrationToken;
+import pl.majchrzw.accountactivation.RegistrationTokenRepository;
 import pl.majchrzw.dto.RegisterUserDTO;
 import pl.majchrzw.exceptions.TooMuchLoginAttemptsException;
 import pl.majchrzw.note.NoteRepository;
@@ -36,6 +39,10 @@ public class CustomUserDetailsService implements UserDetailsService {
 	
 	private final NoteRepository noteRepository;
 	
+	private final RegistrationTokenRepository tokenRepository;
+	
+	private final JavaMailSender mailSender;
+	
 	@Autowired
 	private LoginAttemptService loginAttemptService;
 	
@@ -49,7 +56,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 	
 	public User registerUser(RegisterUserDTO registerUserDTO) {
 		User user = User.builder()
-				.enabled(true)
+				.enabled(false)
 				.username(registerUserDTO.getUsername())
 				.email(registerUserDTO.getEmail())
 				.password(passwordEncoder.encode(registerUserDTO.getPassword()))
@@ -61,8 +68,12 @@ public class CustomUserDetailsService implements UserDetailsService {
 		} else {
 			user.setSecret("");
 		}
+		// TODO - tutaj trzeba ustawić enabled = false i wysłać maila z sekretem (najpierw stworzyć token i zapisać)
+		User registeredUser = userRepository.save(user);
+		RegistrationToken token = tokenRepository.save(new RegistrationToken(registeredUser));
+		sendActivationEmail(token, registeredUser);
 		
-		return userRepository.save(user);
+		return registeredUser;
 	}
 	
 	public User changeUserPassword(String username, String password) {
@@ -113,5 +124,32 @@ public class CustomUserDetailsService implements UserDetailsService {
 	
 	public boolean existsByEmail(String email){
 		return userRepository.existsByEmail(email);
+	}
+	
+	
+	public boolean activateAccount(String token, String username){
+		// jeżeli aktywowano to true, inaczej false, sprawdzić czy istnieje i ważny oraz aktywować
+		RegistrationToken registrationToken = tokenRepository.findByToken(token).orElse(null);
+		if( registrationToken != null){
+			if ( registrationToken.isValid(username)){
+				User user = loadUserByUsername(username);
+				user.setEnabled(true);
+				userRepository.save(user);
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public void sendActivationEmail(RegistrationToken token, User user){
+		String msgBody = "Kliknij w link aby aktywować konto - https://localhost:8443/activate?token=" + token.getToken() + "&user=" + user.getUsername() + "\n Jeżeli link nie działa zmień 'localhost' na poprawny adres aplikacji";
+
+		SimpleMailMessage mailMessage = new SimpleMailMessage();
+		mailMessage.setSubject("Aktywuj konto");
+		mailMessage.setText(msgBody);
+		mailMessage.setTo(user.getEmail());
+		mailMessage.setFrom("wojjmaj22@gmail.com");
+		
+		mailSender.send(mailMessage);
 	}
 }

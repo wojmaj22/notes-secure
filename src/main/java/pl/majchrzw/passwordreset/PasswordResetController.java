@@ -83,5 +83,5 @@ public class PasswordResetController {
 		return "message";
 	}
 	
-	// TODO - może dodać jaką stronę z wiadomościami typu: hasło zmienione albo coś
+	// TODO - sprawdzić stronę z wiadomościami
 }

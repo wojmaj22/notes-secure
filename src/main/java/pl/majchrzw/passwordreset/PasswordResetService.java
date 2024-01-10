@@ -23,12 +23,11 @@ public class PasswordResetService {
 	public void generateTokenAndSendEmail(String email){
 		User user = userRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("No user with email:"+email+", has been found."));
 		PasswordResetToken token = tokenRepository.save(new PasswordResetToken(user));
-		// TODO - po stworzeniu tokenu trzeba wysłać email
-		
-		String msgBody = "https://localhost:8443/password-reset-form?token=" + token.getToken();
-		
+		// TODO - dodać tutaj jakieś lepsze body tej wiadomości
+		String msgBody = "Kliknij w link aby przejść do odzyskiwania hasła: https://localhost:8443/password-reset-form?token=" + token.getToken() + "\nJeżeli link nie działa zmień 'localhost' na poprawny adres aplikacji";
+		// TODO - może spróbować tutaj dać po prostu event - reset password i wysyłać tego mail asynchronicznie
 		SimpleMailMessage mailMessage = new SimpleMailMessage();
-		mailMessage.setSubject("Reset your password");
+		mailMessage.setSubject("Zresetuj swoje hasło");
 		mailMessage.setText(msgBody);
 		mailMessage.setTo(user.getEmail());
 		mailMessage.setFrom("wojjmaj22@gmail.com");

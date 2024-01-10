@@ -39,16 +39,10 @@ public class User implements UserDetails {
 	private Role role;
 	
 	@OneToOne(mappedBy = "user")
-	private PasswordResetToken resetToken;
+	private PasswordResetToken passwordResetToken;
 	
-	public User(String username, String password, boolean enabled, boolean isUsing2FA, Role role) {
-		this.username = username;
-		this.password = password;
-		this.enabled = enabled;
-		this.isUsing2FA = isUsing2FA;
-		this.secret = Base32.random();
-		this.role = role;
-	}
+	@OneToOne(mappedBy = "user")
+	private PasswordResetToken activateAccountToken;
 	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {

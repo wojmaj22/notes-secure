@@ -60,6 +60,29 @@
     <input type="submit" value="Zapisz">
 </form>
 <br>
+<div th:if="${not #lists.isEmpty(devices)}">
+    <p>Ostatnie logowania:</p>
+    <table>
+        <thead>
+        <tr>
+            <th>Data logowania</th>
+            <th>Urządzenie</th>
+            <th>Adres IP</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="device : ${devices}">
+            <td th:text="${#temporals.format(device.lastLoggedIn, 'yyyy-MM-dd HH:mm:ss')}"></td>
+            <td th:text="${device.deviceDetails}"></td>
+            <td th:text="${device.ipAddress}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div th:if="${#lists.isEmpty(devices)}">
+    <p>Brak zapisu ostatnich logowań</p>
+</div>
+<br>
 <h1>Usuwanie konta</h1>
 <a th:href="@{/delete-account}">Usuń konto</a>
 </body>
