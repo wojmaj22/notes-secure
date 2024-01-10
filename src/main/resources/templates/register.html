@@ -55,7 +55,7 @@
     <span>Hasło musi mieć 8-64 znaków, w tym dużą i małą literę, liczbę oraz znak specjalny.</span>
 
     <label for="matchingPassword">Powtórz hasło</label>
-    <input id="matchingPassword" placeholder="" th:field="*{matchingPassword}" type="password"/>
+    <input id="matchingPassword" placeholder="password" th:field="*{matchingPassword}" type="password"/>
 
     <label for="2FA">Włączyć 2FA?</label>
     <input id="2FA" th:default="false" th:field="*{isUsing2FA}" type="checkbox">

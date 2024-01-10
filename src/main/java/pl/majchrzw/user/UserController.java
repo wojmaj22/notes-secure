@@ -12,9 +12,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.majchrzw.devices.DeviceService;
-import pl.majchrzw.dto.ChangePasswordDTO;
-import pl.majchrzw.dto.ChangeTotpDTO;
-import pl.majchrzw.dto.RegisterUserDTO;
+import pl.majchrzw.dto.ChangePasswordFormDTO;
+import pl.majchrzw.dto.ChangeTotpFormDTO;
+import pl.majchrzw.dto.RegisterFormDTO;
 
 import java.security.Principal;
 
@@ -28,12 +28,12 @@ public class UserController {
 	
 	@GetMapping("/register")
 	public String register(Model model) {
-		model.addAttribute("form", new RegisterUserDTO());
+		model.addAttribute("form", new RegisterFormDTO());
 		return "register";
 	}
 	
 	@PostMapping("/register")
-	public String processRegister(@Valid @ModelAttribute("form") RegisterUserDTO form, BindingResult bindingResult, Model model) {
+	public String processRegister(@Valid @ModelAttribute("form") RegisterFormDTO form, BindingResult bindingResult, Model model) {
 		if (bindingResult.hasErrors()) {
 			return "register";
 		}
@@ -50,8 +50,8 @@ public class UserController {
 	
 	@GetMapping("/manage")
 	public String manage(Model model, Principal principal) {
-		model.addAttribute("passwordForm", new ChangePasswordDTO());
-		ChangeTotpDTO totpDTO = new ChangeTotpDTO();
+		model.addAttribute("passwordForm", new ChangePasswordFormDTO());
+		ChangeTotpFormDTO totpDTO = new ChangeTotpFormDTO();
 		totpDTO.setIsEnabledTotp(userService.loadUserByUsername(principal.getName()).isUsing2FA());
 		model.addAttribute("totpForm", totpDTO);
 		model.addAttribute("devices", deviceService.getDevicesByUsername(principal.getName()));
@@ -66,7 +66,7 @@ public class UserController {
 	
 	
 	@PostMapping("/change-password")
-	public String changePassword(Principal principal, @ModelAttribute @Valid ChangePasswordDTO dto, BindingResult result) {
+	public String changePassword(Principal principal, @ModelAttribute @Valid ChangePasswordFormDTO dto, BindingResult result) {
 		if (!dto.getNewPassword().equals(dto.getNewPasswordRepeat()) || result.hasErrors()) {
 			return "redirect:/manage";
 		} else {
@@ -76,7 +76,7 @@ public class UserController {
 	}
 	
 	@PostMapping("/change-totp")
-	public String changeTotp(Principal principal, @ModelAttribute ChangeTotpDTO dto, Model model) {
+	public String changeTotp(Principal principal, @ModelAttribute ChangeTotpFormDTO dto, Model model) {
 		User user = userService.loadUserByUsername(principal.getName());
 		if (dto.getIsEnabledTotp() && !user.isUsing2FA()) {
 			// włączyć

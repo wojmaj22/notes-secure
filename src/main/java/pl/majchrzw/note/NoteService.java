@@ -37,10 +37,8 @@ public class NoteService {
 		return new IvParameterSpec(iv);
 	}
 	
-	public Note saveNote(NoteDTO noteDTO) throws Exception {
-		//Parser parser = Parser.builder().build();
+	public void saveNote(NoteDTO noteDTO) throws Exception {
 		Node document = parser.parse(noteDTO.getText());
-		//HtmlRenderer renderer = HtmlRenderer.builder().escapeHtml(true).build();
 		String parsedText = renderer.render(document);
 		if (noteDTO.getPassword() == null || noteDTO.getPassword().equals("")) {
 			Note note = Note.builder()
@@ -50,7 +48,7 @@ public class NoteService {
 					.iv(null)
 					.isPublic(noteDTO.getIsPublic())
 					.build();
-			return noteRepository.save(note);
+			noteRepository.save(note);
 		} else {
 			if (noteDTO.getIsPublic()) {
 				throw new IllegalArgumentException("Szyfrowana notatka nie może być publiczna.");
@@ -68,7 +66,7 @@ public class NoteService {
 					.iv(iv.getIV())
 					.isPublic(noteDTO.getIsPublic())
 					.build();
-			return noteRepository.save(note);
+			noteRepository.save(note);
 		}
 	}
 	
@@ -85,10 +83,8 @@ public class NoteService {
 			String cipherText = noteOptional.get().getText();
 			Cipher cipher = Cipher.getInstance(algorithm);
 			cipher.init(Cipher.DECRYPT_MODE, getKey(password), new IvParameterSpec(note.getIv()));
-			byte[] plainText = cipher.doFinal(Base64.getDecoder()
-					.decode(cipherText));
+			byte[] plainText = cipher.doFinal(Base64.getDecoder().decode(cipherText));
 			note.setText(new String(plainText));
-			
 		}
 		note.setIv("".getBytes());
 		return note;

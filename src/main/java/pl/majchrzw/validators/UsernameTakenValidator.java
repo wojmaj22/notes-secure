@@ -16,7 +16,8 @@ public class UsernameTakenValidator implements ConstraintValidator<UsernameTaken
 	}
 	
 	@Override
-	public boolean isValid(String email, ConstraintValidatorContext constraintValidatorContext) {
-		return !repository.existsByEmail(email);
+	public boolean isValid(String username, ConstraintValidatorContext constraintValidatorContext) {
+		boolean test = repository.existsByUsername(username);
+		return !test;
 	}
 }

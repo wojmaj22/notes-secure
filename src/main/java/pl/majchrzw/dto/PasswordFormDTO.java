@@ -3,18 +3,18 @@ package pl.majchrzw.dto;
 import lombok.Data;
 
 @Data
-public class ProvidePasswordDTO {
+public class PasswordFormDTO {
 	private String password;
 	private Integer id;
 	
-	public ProvidePasswordDTO(Integer id) {
+	public PasswordFormDTO(Integer id) {
 		this.id = id;
 	}
 	
-	public ProvidePasswordDTO() {
+	public PasswordFormDTO() {
 	}
 	
-	public ProvidePasswordDTO(Integer id, String password) {
+	public PasswordFormDTO(Integer id, String password) {
 		this.password = password;
 		this.id = id;
 	}

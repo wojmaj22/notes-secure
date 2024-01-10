@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import pl.majchrzw.dto.ProvideEmailDTO;
-import pl.majchrzw.dto.ResetPasswordDTO;
+import pl.majchrzw.dto.EmailFormDTO;
+import pl.majchrzw.dto.ResetPasswordFormDTO;
 import pl.majchrzw.user.CustomUserDetailsService;
 
 import java.util.Random;
@@ -28,13 +28,13 @@ public class PasswordResetController {
 	@GetMapping("/password-reset")
 	public String getResetPasswordForm(Model model){
 
-		model.addAttribute("form", new ProvideEmailDTO());
+		model.addAttribute("form", new EmailFormDTO());
 		return "forgot-password/email-form";
 		
 	}
 	
 	@PostMapping("/password-reset")
-	public String sendEmailForReset(@Valid @ModelAttribute("form") ProvideEmailDTO form, BindingResult result, Model model){
+	public String sendEmailForReset(@Valid @ModelAttribute("form") EmailFormDTO form, BindingResult result, Model model){
 		// TODO - sprawdzić czy opóźnienie jest takie same
 		if ( result.hasErrors()){
 			
@@ -59,7 +59,7 @@ public class PasswordResetController {
 		PasswordResetToken resetToken = tokenService.getResetToken(token);
 		if ( resetToken != null){
 			if ( resetToken.isNotExpired()){
-				model.addAttribute("form", new ResetPasswordDTO(resetToken.getToken()));
+				model.addAttribute("form", new ResetPasswordFormDTO(resetToken.getToken()));
 				return "forgot-password/password-form";
 			}
 		}
@@ -68,7 +68,7 @@ public class PasswordResetController {
 	}
 	
 	@PostMapping("password-reset-form")
-	public String handlePasswordChangeForm(@Valid @ModelAttribute("form") ResetPasswordDTO form, BindingResult result, Model model){
+	public String handlePasswordChangeForm(@Valid @ModelAttribute("form") ResetPasswordFormDTO form, BindingResult result, Model model){
 		if ( result.hasErrors()){
 			return "forgot-password/password-form";
 		}

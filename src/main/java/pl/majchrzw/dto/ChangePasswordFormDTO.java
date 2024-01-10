@@ -10,7 +10,7 @@ import pl.majchrzw.validators.PasswordValid;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChangePasswordDTO {
+public class ChangePasswordFormDTO {
 	@Nonnull
 	@NotEmpty
 	private String oldPassword;

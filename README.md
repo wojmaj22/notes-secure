@@ -1,15 +1,15 @@
 # Notes secure
 Projekt prostej aplikacji pozwalającej na przechowywanie notatek. 
 Głównym nastawieniem projektu jest bezpieczeństwo aplikacji oraz przechowywanych notatek.
-Projekt zbudowant w oparciu o Java oraz Spring MVC.
+Projekt zbudowant w oparciu o Java oraz Spring i architekturę MVC.
 ## Uruchomienie
-Aby uruchomić aplikację należy uruchomić następujący kod w folderze z kodem:
+Do działania aplikacji wymagane jest posiadanie Dockera.  
+Aby uruchomić aplikację należy uruchomić następujące polecenie w folderze z kodem:
 ```bash
 docker-compose up --build
 ```
 Aplikacja zostanie skompilowana a następnie uruchomiona.
-Aby skorzystać z aplikacji należy uruchomić na przeglądarcę stronę `https://localhost:8443/`.
-Następnie można korzystać z aplikacji.
+Aplikacja będzie dostępna pod adresem `https://localhost:8443/`.
 ## Funkcjonalności
 Aplikacja posiada następujące funkcjonalności:
 - Tworzenie i usuwanie notatek
@@ -19,8 +19,11 @@ Aplikacja posiada następujące funkcjonalności:
 - Notatki są przechowywane w oddzielnym kontenerze z bazą danych PostgreSQL
 - Aplikacja obsługuje jedynie połączenie szyfrowane poprzez HTTPS
 - Zmiana hasła dla użytkownika
-- Włączanie i wyłączanie zabezpieczenia 2FA
+- Zabezpieczenie 2FA przy logowaniu poprzez Google Authenticator
 - Wykorzystanie tokenów CSRF
-- Zabezpieczenie przez atakiem brute-force poprzez blokadę IP w przypadku nadmiernej liczby prób logowania
-- Przechowywanie haseł w zaszyfrowanej formie
+- Zabezpieczenia przez atakiem brute-force w tym blokada IP w przypadku nadmiernej liczby prób logowania oraz opóźnienia
+podczas logowania
 - Walidacja danych wejściowych w tym szczególnie haseł
+- Po rejestracji należy aktywować konto poprzez link z wiadomości e-mail
+- Odzyskiwanie hasła poprzez email
+- Historia dostępu do aplikacji na danym koncie - informowanie o użytych urządeniach i adresach IP

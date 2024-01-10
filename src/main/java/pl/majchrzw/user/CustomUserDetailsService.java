@@ -17,7 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.majchrzw.accountactivation.RegistrationToken;
 import pl.majchrzw.accountactivation.RegistrationTokenRepository;
-import pl.majchrzw.dto.RegisterUserDTO;
+import pl.majchrzw.dto.RegisterFormDTO;
 import pl.majchrzw.exceptions.TooMuchLoginAttemptsException;
 import pl.majchrzw.note.NoteRepository;
 import pl.majchrzw.security.LoginAttemptService;
@@ -54,15 +54,15 @@ public class CustomUserDetailsService implements UserDetailsService {
 		return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("No user found with username: " + username));
 	}
 	
-	public User registerUser(RegisterUserDTO registerUserDTO) {
+	public User registerUser(RegisterFormDTO registerFormDTO) {
 		User user = User.builder()
 				.enabled(false)
-				.username(registerUserDTO.getUsername())
-				.email(registerUserDTO.getEmail())
-				.password(passwordEncoder.encode(registerUserDTO.getPassword()))
+				.username(registerFormDTO.getUsername())
+				.email(registerFormDTO.getEmail())
+				.password(passwordEncoder.encode(registerFormDTO.getPassword()))
 				.role(Role.USER)
 				.build();
-		if (registerUserDTO.getIsUsing2FA()) {
+		if (registerFormDTO.getIsUsing2FA()) {
 			user.setUsing2FA(true);
 			user.setSecret(Base32.random());
 		} else {

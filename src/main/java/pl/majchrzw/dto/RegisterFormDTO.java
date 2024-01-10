@@ -9,10 +9,10 @@ import pl.majchrzw.validators.*;
 
 @Data
 @PasswordMatches
-public class RegisterUserDTO {
+public class RegisterFormDTO {
 	@NotNull
 	@NotEmpty
-	@Length(min = 6, max = 32)
+	@Length(min = 4, max = 64)
 	@UsernameTaken
 	private String username;
 	@NotNull

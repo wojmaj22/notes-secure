@@ -8,7 +8,7 @@ import pl.majchrzw.validators.PasswordValid;
 
 @Data
 @PasswordMatches
-public class ResetPasswordDTO {
+public class ResetPasswordFormDTO {
 	
 	@NotNull
 	@NotEmpty
@@ -20,7 +20,7 @@ public class ResetPasswordDTO {
 	
 	private String token;
 	
-	public ResetPasswordDTO(String token){
+	public ResetPasswordFormDTO(String token){
 		this.token = token;
 	}
 }

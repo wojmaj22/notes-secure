@@ -3,6 +3,6 @@ package pl.majchrzw.dto;
 import lombok.Data;
 
 @Data
-public class ChangeTotpDTO {
+public class ChangeTotpFormDTO {
 	private Boolean isEnabledTotp;
 }

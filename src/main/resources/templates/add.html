@@ -42,16 +42,19 @@
 
     <label for="noteName">Nazwa notatki:</label>
     <input id="noteName" name="noteName" required th:field="*{name}" type="text">
+    <p class="error" th:errors="*{name}" th:if="${#fields.hasErrors('name')}">Zła nazwa</p>
     <br>
 
     <label for="noteText">Tekst notatki:</label>
     <textarea id="noteText" name="noteText" required th:field="*{text}"></textarea>
     <span>Notatki można ostylować używając do tego języka markdown</span>
+    <p class="error" th:errors="*{text}" th:if="${#fields.hasErrors('text')}">Zły tekst</p>
 
     <br>
 
     <label for="password">Hasło:</label>
     <input id="password" name="password" th:field="*{password}" type="password">
+    <span>Jeżeli pozostawisz hasło puste notatka będzię nieszyfrowana</span>
     <br>
 
     <label for="isPublic">Czy jest publiczna:</label>

@@ -19,7 +19,7 @@ public class Note {
 	@Column
 	private String name;
 	
-	@Column
+	@Column(columnDefinition = "TEXT")
 	private String text;
 	
 	@Column(name = "iv")

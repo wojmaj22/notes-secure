@@ -1,15 +1,17 @@
 package pl.majchrzw.note;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import pl.majchrzw.dto.NoteDTO;
-import pl.majchrzw.dto.ProvidePasswordDTO;
+import pl.majchrzw.dto.PasswordFormDTO;
 
 import javax.crypto.BadPaddingException;
 import java.security.InvalidKeyException;
@@ -42,7 +44,10 @@ public class NoteController {
 	}
 	
 	@PostMapping("/notes/add")
-	public String saveNote(@ModelAttribute NoteDTO noteDTO, Principal principal, Model model) throws Exception {
+	public String saveNote(@Valid @ModelAttribute NoteDTO noteDTO, BindingResult bindingResult, Principal principal, Model model) throws Exception {
+		if ( bindingResult.hasErrors()){
+			return "add";
+		}
 		noteDTO.setUsername(principal.getName());
 		try {
 			noteService.saveNote(noteDTO);
@@ -68,7 +73,7 @@ public class NoteController {
 		}
 
 		if (note.getIv() != null) {
-			model.addAttribute("passwordDTO", new ProvidePasswordDTO(id));
+			model.addAttribute("passwordDTO", new PasswordFormDTO(id));
 			return "decrypt";
 		}
 		model.addAttribute("note", noteService.getNote(id, null));
@@ -76,7 +81,7 @@ public class NoteController {
 	}
 	
 	@PostMapping("/notes/decrypt")
-	public String decrypt(@ModelAttribute ProvidePasswordDTO passwordDTO, Model model, Principal principal) throws Exception {
+	public String decrypt(@ModelAttribute PasswordFormDTO passwordDTO, Model model, Principal principal) throws Exception {
 		Note note;
 		try {
 			note = noteService.getNote(passwordDTO.getId(), passwordDTO.getPassword());
@@ -102,7 +107,7 @@ public class NoteController {
 		}
 
 		if (note.getIv() != null) {
-			model.addAttribute("form", new ProvidePasswordDTO(id));
+			model.addAttribute("form", new PasswordFormDTO(id));
 			return "delete";
 		}
 		noteService.deleteNoteById(id);
@@ -110,7 +115,7 @@ public class NoteController {
 	}
 	
 	@PostMapping("/notes/delete/encrypted")
-	public String deleteEncrypted(@ModelAttribute ProvidePasswordDTO passwordDTO, Model model, Principal principal) {
+	public String deleteEncrypted(@ModelAttribute PasswordFormDTO passwordDTO, Model model, Principal principal) {
 		Note note;
 		try {
 			note = noteService.getNote(passwordDTO.getId(), passwordDTO.getPassword());
@@ -120,7 +125,7 @@ public class NoteController {
 			}
 		} catch (Exception e) {
 			if (e.getClass() == BadPaddingException.class || e.getClass() == InvalidKeyException.class) {
-				model.addAttribute("form", new ProvidePasswordDTO(passwordDTO.getId()));
+				model.addAttribute("form", new PasswordFormDTO(passwordDTO.getId()));
 				model.addAttribute("msg", "Niepoprawne hasło do notatki");
 				return "delete";
 			}
