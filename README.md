@@ -3,7 +3,9 @@ Projekt prostej aplikacji pozwalającej na przechowywanie notatek.
 Głównym nastawieniem projektu jest bezpieczeństwo aplikacji oraz przechowywanych notatek.
 Projekt zbudowant w oparciu o Java oraz Spring i architekturę MVC.
 ## Uruchomienie
-Do działania aplikacji wymagane jest posiadanie Dockera.  
+Do działania aplikacji wymagane jest posiadanie Dockera.
+Przed uruchomieniem aplikacji należy odpowiednio skonfigurować serwer do wysyłania emaili poprzez plik `application.yml`
+oraz ustawienia `spring.mail.*`
 Aby uruchomić aplikację należy uruchomić następujące polecenie w folderze z kodem:
 ```bash
 docker-compose up --build

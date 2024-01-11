@@ -1,10 +1,11 @@
-package pl.majchrzw.passwordreset;
+package pl.majchrzw.passwordReset;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,7 +38,6 @@ public class PasswordResetController {
 	public String sendEmailForReset(@Valid @ModelAttribute("form") EmailFormDTO form, BindingResult result, Model model){
 		// TODO - sprawdzić czy opóźnienie jest takie same
 		if ( result.hasErrors()){
-			
 			return "forgot-password/email-form";
 		}
 
@@ -63,19 +63,22 @@ public class PasswordResetController {
 				return "forgot-password/password-form";
 			}
 		}
-		// TODO - tutaj chyba można usunąć tą walidację?
 		return "redirect:/login";
 	}
 	
 	@PostMapping("password-reset-form")
 	public String handlePasswordChangeForm(@Valid @ModelAttribute("form") ResetPasswordFormDTO form, BindingResult result, Model model){
+		if ( !form.getPassword().equals(form.getMatchingPassword())){
+			ObjectError error = new ObjectError("globalError", "Podane hasła są różne");
+			result.addError(error);
+		}
 		if ( result.hasErrors()){
 			return "forgot-password/password-form";
 		}
 		PasswordResetToken resetToken = tokenService.getResetToken(form.getToken());
 		if ( resetToken != null){
 			if ( resetToken.isNotExpired()){
-				userDetailsService.changeUserPassword(resetToken.getUser().getUsername(), form.getPassword());
+				userDetailsService.changeUserPassword(resetToken.getUsername(), form.getPassword());
 				tokenService.discardToken(resetToken);
 			}
 		}
@@ -83,5 +86,4 @@ public class PasswordResetController {
 		return "message";
 	}
 	
-	// TODO - sprawdzić stronę z wiadomościami
 }

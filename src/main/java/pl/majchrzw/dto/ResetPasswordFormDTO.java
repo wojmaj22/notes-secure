@@ -7,7 +7,6 @@ import pl.majchrzw.validators.PasswordMatches;
 import pl.majchrzw.validators.PasswordValid;
 
 @Data
-@PasswordMatches
 public class ResetPasswordFormDTO {
 	
 	@NotNull

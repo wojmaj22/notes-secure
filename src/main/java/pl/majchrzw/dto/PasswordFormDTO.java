@@ -2,20 +2,17 @@ package pl.majchrzw.dto;
 
 import lombok.Data;
 
+import java.util.UUID;
+
 @Data
 public class PasswordFormDTO {
 	private String password;
-	private Integer id;
+	private UUID id;
 	
-	public PasswordFormDTO(Integer id) {
+	public PasswordFormDTO(UUID id) {
 		this.id = id;
 	}
 	
 	public PasswordFormDTO() {
-	}
-	
-	public PasswordFormDTO(Integer id, String password) {
-		this.password = password;
-		this.id = id;
 	}
 }

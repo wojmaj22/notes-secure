@@ -15,8 +15,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import pl.majchrzw.accountactivation.RegistrationToken;
-import pl.majchrzw.accountactivation.RegistrationTokenRepository;
+import pl.majchrzw.accountActivation.RegistrationToken;
+import pl.majchrzw.accountActivation.RegistrationTokenRepository;
 import pl.majchrzw.dto.RegisterFormDTO;
 import pl.majchrzw.exceptions.TooMuchLoginAttemptsException;
 import pl.majchrzw.note.NoteRepository;
@@ -68,9 +68,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 		} else {
 			user.setSecret("");
 		}
-		// TODO - tutaj trzeba ustawić enabled = false i wysłać maila z sekretem (najpierw stworzyć token i zapisać)
 		User registeredUser = userRepository.save(user);
-		RegistrationToken token = tokenRepository.save(new RegistrationToken(registeredUser));
+		RegistrationToken token = tokenRepository.save(new RegistrationToken(registeredUser.getUsername()));
 		sendActivationEmail(token, registeredUser);
 		
 		return registeredUser;

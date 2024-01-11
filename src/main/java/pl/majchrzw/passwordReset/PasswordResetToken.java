@@ -1,4 +1,4 @@
-package pl.majchrzw.passwordreset;
+package pl.majchrzw.passwordReset;
 
 
 import jakarta.persistence.*;
@@ -28,18 +28,16 @@ public class PasswordResetToken {
 	@Column(unique = true)
 	private String token;
 	
-	@OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
-	@JoinColumn(nullable = false, name = "user_id")
-	private User user;
+
+	private String username;
 	
 	private LocalDateTime expiryDate;
 	
-	public PasswordResetToken(User user){
-		this.user = user;
+	public PasswordResetToken(String user){
+		this.username = user;
 		token = UUID.randomUUID().toString();
 		LocalDateTime now = LocalDateTime.now();
 		expiryDate = now.plusMinutes(EXPIRATION);
-		// TODO - spradzić czy expiryDate jest poprawne
 	}
 	
 	public boolean isNotExpired(){

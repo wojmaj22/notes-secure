@@ -16,6 +16,7 @@ import pl.majchrzw.dto.PasswordFormDTO;
 import javax.crypto.BadPaddingException;
 import java.security.InvalidKeyException;
 import java.security.Principal;
+import java.util.UUID;
 
 @Controller
 @RequiredArgsConstructor
@@ -59,7 +60,7 @@ public class NoteController {
 	}
 	
 	@GetMapping("/notes/details/{id}")
-	public String noteDetails(@PathVariable Integer id, Model model, Principal principal) throws Exception {
+	public String noteDetails(@PathVariable UUID id, Model model, Principal principal) throws Exception {
 		Note note;
 		try{
 			note = noteService.getNote(id);
@@ -98,7 +99,7 @@ public class NoteController {
 	}
 	
 	@GetMapping("/notes/delete/{id}")
-	public String delete(@PathVariable Integer id, Principal principal, Model model) {
+	public String delete(@PathVariable UUID id, Principal principal, Model model) {
 		Note note = noteService.getNote(id);
 		if (!note.getUsername().equals(principal.getName())) {
 

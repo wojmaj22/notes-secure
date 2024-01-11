@@ -1,10 +1,9 @@
-package pl.majchrzw.accountactivation;
+package pl.majchrzw.accountActivation;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.majchrzw.user.User;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -12,7 +11,6 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "register_token")
 @NoArgsConstructor
 public class RegistrationToken {
 	
@@ -25,20 +23,18 @@ public class RegistrationToken {
 	@Column(unique = true)
 	private String token;
 	
-	@OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
-	@JoinColumn(nullable = false, name = "user_id")
-	private User user;
+	private String username;
 	
 	private LocalDateTime expiryDate;
 	
-	public RegistrationToken(User user){
-		this.user = user;
+	public RegistrationToken(String username){
+		this.username = username;
 		token = UUID.randomUUID().toString();
 		LocalDateTime now = LocalDateTime.now();
 		expiryDate = now.plusHours(EXPIRATION);
 	}
 	
 	public boolean isValid(String username){
-		return expiryDate.isAfter(LocalDateTime.now()) && username.equals(user.getUsername());
+		return expiryDate.isAfter(LocalDateTime.now()) && username.equals(this.username);
 	}
 }

@@ -3,6 +3,8 @@ package pl.majchrzw.note;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.UUID;
+
 @Entity
 @Table
 @Getter
@@ -13,8 +15,8 @@ import lombok.*;
 public class Note {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	@GeneratedValue(strategy = GenerationType.UUID)
+	private UUID id;
 	
 	@Column
 	private String name;

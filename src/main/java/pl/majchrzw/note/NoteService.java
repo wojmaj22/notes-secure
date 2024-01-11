@@ -19,6 +19,7 @@ import java.security.spec.KeySpec;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -70,7 +71,7 @@ public class NoteService {
 		}
 	}
 	
-	public Note getNote(Integer id, String password) throws Exception {
+	public Note getNote(UUID id, String password) throws Exception {
 		Optional<Note> noteOptional = noteRepository.findById(id);
 		if (noteOptional.isEmpty()) {
 			throw new EntityNotFoundException("No note with id: " + id + ", has been found.");
@@ -90,7 +91,7 @@ public class NoteService {
 		return note;
 	}
 	
-	public Note getNote(Integer id) {
+	public Note getNote(UUID id) {
 		return noteRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("No note with id: " + id + ", has been found"));
 	}
 	
@@ -118,11 +119,11 @@ public class NoteService {
 		return notes;
 	}
 	
-	public void deleteNoteById(Integer id) {
+	public void deleteNoteById(UUID id) {
 		noteRepository.deleteById(id);
 	}
 	
-	public boolean isNoteEncrypted(Integer id) {
+	public boolean isNoteEncrypted(UUID id) {
 		Note note = noteRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("No note with id: " + id + ", has been found"));
 		return note.getIv() != null;
 	}

@@ -2,10 +2,10 @@ package pl.majchrzw.user;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.jboss.aerogear.security.otp.api.Base32;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import pl.majchrzw.passwordreset.PasswordResetToken;
+import pl.majchrzw.accountActivation.RegistrationToken;
+import pl.majchrzw.passwordReset.PasswordResetToken;
 
 import java.util.Collection;
 
@@ -19,7 +19,7 @@ import java.util.Collection;
 public class User implements UserDetails {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 	
 	@Column(unique = true)
@@ -37,12 +37,6 @@ public class User implements UserDetails {
 	private String secret;
 	
 	private Role role;
-	
-	@OneToOne(mappedBy = "user")
-	private PasswordResetToken passwordResetToken;
-	
-	@OneToOne(mappedBy = "user")
-	private PasswordResetToken activateAccountToken;
 	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
