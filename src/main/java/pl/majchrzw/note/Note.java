@@ -27,6 +27,8 @@ public class Note {
 	@Column(name = "iv")
 	private byte[] iv;
 	
+	private byte[] salt;
+	
 	@Column(name = "is_public")
 	private boolean isPublic;
 	

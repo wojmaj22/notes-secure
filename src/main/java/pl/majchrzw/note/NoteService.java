@@ -54,17 +54,21 @@ public class NoteService {
 			if (noteDTO.getIsPublic()) {
 				throw new IllegalArgumentException("Szyfrowana notatka nie może być publiczna.");
 			}
-			SecretKey key = getKey(noteDTO.getPassword());
+			byte[] salt = new byte[128];
+			new SecureRandom().nextBytes(salt);
+			SecretKey key = getKey(noteDTO.getPassword(), salt);
 			Cipher cipher = Cipher.getInstance(algorithm);
 			IvParameterSpec iv = generateIv();
 			cipher.init(Cipher.ENCRYPT_MODE, key, iv);
 			byte[] cipherText = cipher.doFinal(parsedText.getBytes());
+			
 			
 			Note note = Note.builder()
 					.name(noteDTO.getName())
 					.text(Base64.getEncoder().encodeToString(cipherText))
 					.username(noteDTO.getUsername())
 					.iv(iv.getIV())
+					.salt(salt)
 					.isPublic(noteDTO.getIsPublic())
 					.build();
 			noteRepository.save(note);
@@ -83,7 +87,7 @@ public class NoteService {
 			}
 			String cipherText = noteOptional.get().getText();
 			Cipher cipher = Cipher.getInstance(algorithm);
-			cipher.init(Cipher.DECRYPT_MODE, getKey(password), new IvParameterSpec(note.getIv()));
+			cipher.init(Cipher.DECRYPT_MODE, getKey(password, note.getSalt()), new IvParameterSpec(note.getIv()));
 			byte[] plainText = cipher.doFinal(Base64.getDecoder().decode(cipherText));
 			note.setText(new String(plainText));
 		}
@@ -128,9 +132,9 @@ public class NoteService {
 		return note.getIv() != null;
 	}
 	
-	private SecretKey getKey(String password) throws Exception {
+	private SecretKey getKey(String password, byte[] salt) throws Exception {
 		SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
-		KeySpec keySpec = new PBEKeySpec(password.toCharArray(), "1234".getBytes(), 65536, 256);
+		KeySpec keySpec = new PBEKeySpec(password.toCharArray(), salt, 262144, 256);
 		return new SecretKeySpec(keyFactory.generateSecret(keySpec).getEncoded(), "AES");
 	}
 }

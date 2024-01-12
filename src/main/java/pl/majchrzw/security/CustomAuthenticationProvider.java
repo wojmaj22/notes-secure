@@ -22,7 +22,7 @@ public class CustomAuthenticationProvider extends DaoAuthenticationProvider {
 	public Authentication authenticate(Authentication authentication) {
 		String verificationCode = ((CustomWebAuthenticationDetails) authentication.getDetails()).getVerificationCode();
 		try {
-			Thread.sleep(random.nextInt(40, 200));
+			Thread.sleep(random.nextInt(120, 200));
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}

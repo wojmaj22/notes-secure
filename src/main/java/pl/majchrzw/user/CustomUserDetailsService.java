@@ -127,7 +127,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 	
 	
 	public boolean activateAccount(String token, String username){
-		// jeżeli aktywowano to true, inaczej false, sprawdzić czy istnieje i ważny oraz aktywować
 		RegistrationToken registrationToken = tokenRepository.findByToken(token).orElse(null);
 		if( registrationToken != null){
 			if ( registrationToken.isValid(username)){
