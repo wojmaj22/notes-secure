@@ -4,6 +4,7 @@ import com.icegreen.greenmail.configuration.GreenMailConfiguration;
 import com.icegreen.greenmail.junit5.GreenMailExtension;
 import com.icegreen.greenmail.util.ServerSetupTest;
 import jakarta.persistence.EntityNotFoundException;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -19,6 +20,9 @@ import org.testcontainers.utility.DockerImageName;
 import pl.majchrzw.dto.NoteDTO;
 import pl.majchrzw.note.Note;
 import pl.majchrzw.note.NoteService;
+
+import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -47,6 +51,11 @@ public class NotesServiceTests {
 		registry.add("spring.datasource.url", postgres::getJdbcUrl);
 		registry.add("spring.datasource.username", postgres::getUsername);
 		registry.add("spring.datasource.password", postgres::getPassword);
+	}
+	
+	@AfterEach
+	public void cleanDB(){
+		noteService.deleteAll();
 	}
 	
 	@Test
@@ -130,7 +139,6 @@ public class NotesServiceTests {
 		// given
 		final String name = "notatka";
 		final String text = "tekst";
-		final String expectedText = "<p>tekst</p>\n";
 		final String username = "username";
 		final String password = "1234";
 		NoteDTO noteDTO = NoteDTO.builder()
@@ -173,7 +181,6 @@ public class NotesServiceTests {
 		// given
 		final String name = "notatka";
 		final String text = "tekst";
-		final String expectedText = "<p>tekst</p>\n";
 		final String username = "username";
 		NoteDTO noteDTO = NoteDTO.builder()
 				.name(name)
@@ -264,5 +271,189 @@ public class NotesServiceTests {
 		Note note = noteService.saveNote(noteDTO);
 		// then
 		Assertions.assertEquals(expectedText, note.getText());
+	}
+	
+	@Test
+	public void shouldGetNotesByUsername() throws Exception {
+		final String name = "notatka";
+		final String text = "tekst";
+		final String username = "username";
+		NoteDTO noteDTO = NoteDTO.builder()
+				.name(name)
+				.isPublic(false)
+				.text(text)
+				.username(username)
+				.password(null)
+				.build();
+		Note note = noteService.saveNote(noteDTO);
+		NoteDTO noteDTO2 = NoteDTO.builder()
+				.name(name)
+				.isPublic(false)
+				.text(text)
+				.username(username)
+				.password("1234")
+				.build();
+		Note note2 = noteService.saveNote(noteDTO2);
+		
+		List<Note> notes = noteService.getNotesByUsername(username);
+		
+		Assertions.assertEquals(2, notes.size());
+	}
+	
+	@Test
+	public void getNoteById() throws Exception {
+		final String name = "notatka";
+		final String text = "tekst";
+		final String username = "username";
+		NoteDTO noteDTO = NoteDTO.builder()
+				.name(name)
+				.isPublic(false)
+				.text(text)
+				.username(username)
+				.password(null)
+				.build();
+		Note note = noteService.saveNote(noteDTO);
+		
+		
+		Note noteFromDb = noteService.getNote(note.getId());
+		
+		Assertions.assertEquals(noteFromDb, note);
+	}
+	
+	@Test
+	public void getSecuredNoteById() throws Exception {
+		final String name = "notatka";
+		final String text = "tekst";
+		final String username = "username";
+		final String password = "1234";
+		NoteDTO noteDTO = NoteDTO.builder()
+				.name(name)
+				.isPublic(false)
+				.text(text)
+				.username(username)
+				.password(password)
+				.build();
+		Note note = noteService.saveNote(noteDTO);
+		
+		
+		Note noteFromDb = noteService.getNote(note.getId(), password);
+		
+		Assertions.assertEquals(note.getId(), noteFromDb.getId());
+	}
+	
+	@Test
+	public void shouldThrowExceptionWhenNoteDoesNotExist() throws Exception {
+		final String name = "notatka";
+		final String text = "tekst";
+		final String username = "username";
+		final String password = "1234";
+		NoteDTO noteDTO = NoteDTO.builder()
+				.name(name)
+				.isPublic(false)
+				.text(text)
+				.username(username)
+				.password(password)
+				.build();
+		Note note = noteService.saveNote(noteDTO);
+		
+		assertThrows(EntityNotFoundException.class,() -> noteService.getNote(UUID.randomUUID(), password));
+	}
+	
+	@Test
+	public void shouldThrowExceptionWhenNoPasswordForEncryptedNoteIsProvided() throws Exception {
+		final String name = "notatka";
+		final String text = "tekst";
+		final String username = "username";
+		final String password = "1234";
+		NoteDTO noteDTO = NoteDTO.builder()
+				.name(name)
+				.isPublic(false)
+				.text(text)
+				.username(username)
+				.password(password)
+				.build();
+		Note note = noteService.saveNote(noteDTO);
+		
+		assertThrows(IllegalStateException.class,() -> noteService.getNote(note.getId(), null));
+	}
+	
+	@Test
+	public void shouldThrowExceptionWhenWrongPasswordForEncryptedNoteIsProvided() throws Exception {
+		final String name = "notatka";
+		final String text = "tekst";
+		final String username = "username";
+		final String password = "1234";
+		NoteDTO noteDTO = NoteDTO.builder()
+				.name(name)
+				.isPublic(false)
+				.text(text)
+				.username(username)
+				.password(password)
+				.build();
+		Note note = noteService.saveNote(noteDTO);
+		
+		assertThrows(Exception.class,() -> noteService.getNote(note.getId(), "12345"));
+	}
+	
+	@Test
+	public void shouldGetAllNotes() throws Exception {
+		final String name = "notatka";
+		final String text = "tekst";
+		final String username = "username";
+		NoteDTO noteDTO = NoteDTO.builder()
+				.name(name)
+				.isPublic(false)
+				.text(text)
+				.username(username)
+				.password(null)
+				.build();
+		Note note = noteService.saveNote(noteDTO);
+		NoteDTO noteDTO2 = NoteDTO.builder()
+				.name(name)
+				.isPublic(false)
+				.text(text)
+				.username(username)
+				.password("1234")
+				.build();
+		Note note2 = noteService.saveNote(noteDTO2);
+		
+		List<Note> notes = noteService.getNotes();
+		
+		Assertions.assertEquals(notes.size(), 2);
+	}
+	
+	@Test
+	public void shouldGetAllPublicNotes() throws Exception {
+		final String name = "notatka";
+		final String text = "tekst";
+		final String username = "username";
+		NoteDTO noteDTO = NoteDTO.builder()
+				.name(name)
+				.isPublic(false)
+				.text(text)
+				.username(username)
+				.password(null)
+				.build();
+		Note note = noteService.saveNote(noteDTO);
+		NoteDTO noteDTO2 = NoteDTO.builder()
+				.name(name)
+				.isPublic(false)
+				.text(text)
+				.username(username)
+				.password("1234")
+				.build();
+		Note note2 = noteService.saveNote(noteDTO2);
+		NoteDTO noteDTO3 = NoteDTO.builder()
+				.name(name)
+				.isPublic(true)
+				.text(text)
+				.username(username)
+				.password(null)
+				.build();
+		Note note3 = noteService.saveNote(noteDTO3);
+		
+		List<Note> notes = noteService.getPublicNotes();
+		
+		Assertions.assertEquals(1, notes.size());
 	}
 }

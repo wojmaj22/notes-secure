@@ -137,4 +137,8 @@ public class NoteService {
 		KeySpec keySpec = new PBEKeySpec(password.toCharArray(), salt, 262144, 256);
 		return new SecretKeySpec(keyFactory.generateSecret(keySpec).getEncoded(), "AES");
 	}
+	
+	public void deleteAll(){
+		noteRepository.deleteAll();
+	}
 }
