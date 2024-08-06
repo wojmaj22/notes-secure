@@ -1,4 +1,4 @@
-package pl.majchrzw.accountActivation;
+package pl.majchrzw.accountactivation;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

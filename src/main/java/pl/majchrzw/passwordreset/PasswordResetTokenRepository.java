@@ -1,4 +1,4 @@
-package pl.majchrzw.passwordReset;
+package pl.majchrzw.passwordreset;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

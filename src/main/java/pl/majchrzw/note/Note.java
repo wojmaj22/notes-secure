@@ -34,4 +34,17 @@ public class Note {
 	
 	@Column
 	private String username;
+	
+	@Override
+	public final boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof Note note)) return false;
+		
+		return id.equals(note.id);
+	}
+	
+	@Override
+	public int hashCode() {
+		return id.hashCode();
+	}
 }

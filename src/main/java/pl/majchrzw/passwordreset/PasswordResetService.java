@@ -1,4 +1,4 @@
-package pl.majchrzw.passwordReset;
+package pl.majchrzw.passwordreset;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;

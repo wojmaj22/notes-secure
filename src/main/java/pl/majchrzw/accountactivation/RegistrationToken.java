@@ -1,13 +1,9 @@
-package pl.majchrzw.passwordReset;
-
+package pl.majchrzw.accountactivation;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import pl.majchrzw.user.User;
-
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -16,10 +12,9 @@ import java.util.UUID;
 @Setter
 @Entity
 @NoArgsConstructor
-@Table(name = "reset_token")
-public class PasswordResetToken {
+public class RegistrationToken {
 	
-	private static final int EXPIRATION = 60; // expiration in 60 minutes
+	private static final int EXPIRATION = 24; // expiration in 60 minutes
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,19 +23,18 @@ public class PasswordResetToken {
 	@Column(unique = true)
 	private String token;
 	
-
 	private String username;
 	
 	private LocalDateTime expiryDate;
 	
-	public PasswordResetToken(String user){
-		this.username = user;
+	public RegistrationToken(String username){
+		this.username = username;
 		token = UUID.randomUUID().toString();
 		LocalDateTime now = LocalDateTime.now();
-		expiryDate = now.plusMinutes(EXPIRATION);
+		expiryDate = now.plusHours(EXPIRATION);
 	}
 	
-	public boolean isNotExpired(){
-		return expiryDate.isAfter(LocalDateTime.now());
+	public boolean isValid(String username){
+		return expiryDate.isAfter(LocalDateTime.now()) && username.equals(this.username);
 	}
 }

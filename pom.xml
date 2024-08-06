@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.0</version>
+        <version>3.3.2</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -151,34 +151,6 @@
                     <mainClass>pl.majchrzw.Main</mainClass>
                     <layout>JAR</layout>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.7</version>
-                <configuration>
-                    <excludes>
-                       <exclude>pl/majchrzw/**/*DTO.*</exclude>
-                    </excludes>
-                </configuration>
-                <executions>
-
-                    <execution>
-                        <id>prepare-agent</id>
-                        <phase>process-test-classes</phase>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-
-                    <execution>
-                        <id>report</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
